@@ -28,17 +28,18 @@ namespace DarkScript3
         /// </summary>
         private void InitializeComponent()
         {
-            this.ds1Btn = new System.Windows.Forms.Button();
-            this.bbBtn = new System.Windows.Forms.Button();
-            this.ds3Btn = new System.Windows.Forms.Button();
-            this.sekiroBtn = new System.Windows.Forms.Button();
-            this.ds2Btn = new System.Windows.Forms.Button();
-            this.ds2scholarBtn = new System.Windows.Forms.Button();
-            this.fancy = new System.Windows.Forms.CheckBox();
-            this.fancyLabel = new System.Windows.Forms.Label();
-            this.customBtn = new System.Windows.Forms.Button();
-            this.eldenBtn = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            ds1Btn = new System.Windows.Forms.Button();
+            bbBtn = new System.Windows.Forms.Button();
+            ds3Btn = new System.Windows.Forms.Button();
+            sekiroBtn = new System.Windows.Forms.Button();
+            ds2Btn = new System.Windows.Forms.Button();
+            ds2scholarBtn = new System.Windows.Forms.Button();
+            fancy = new System.Windows.Forms.CheckBox();
+            fancyLabel = new System.Windows.Forms.Label();
+            customBtn = new System.Windows.Forms.Button();
+            eldenBtn = new System.Windows.Forms.Button();
+            ac6Button = new System.Windows.Forms.Button();
+            SuspendLayout();
             // 
             // ds1Btn
             // 
@@ -54,15 +55,15 @@ namespace DarkScript3
             // 
             // bbBtn
             // 
-            this.bbBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bbBtn.Location = new System.Drawing.Point(12, 41);
-            this.bbBtn.Name = "bbBtn";
-            this.bbBtn.Size = new System.Drawing.Size(141, 23);
-            this.bbBtn.TabIndex = 1;
-            this.bbBtn.Text = "Bloodborne";
-            this.bbBtn.UseVisualStyleBackColor = true;
-            this.bbBtn.Click += new System.EventHandler(this.BbBtn_Click);
+            bbBtn.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            bbBtn.Location = new System.Drawing.Point(15, 47);
+            bbBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            bbBtn.Name = "bbBtn";
+            bbBtn.Size = new System.Drawing.Size(164, 27);
+            bbBtn.TabIndex = 1;
+            bbBtn.Text = "Bloodborne";
+            bbBtn.UseVisualStyleBackColor = true;
+            bbBtn.Click += BbBtn_Click;
             // 
             // ds3Btn
             // 
@@ -114,39 +115,38 @@ namespace DarkScript3
             // 
             // fancy
             // 
-            this.fancy.AutoSize = true;
-            this.fancy.Location = new System.Drawing.Point(12, 243);
-            this.fancy.Margin = new System.Windows.Forms.Padding(2);
-            this.fancy.Name = "fancy";
-            this.fancy.Size = new System.Drawing.Size(96, 17);
-            this.fancy.TabIndex = 6;
-            this.fancy.Text = "Use MattScript";
-            this.fancy.UseVisualStyleBackColor = true;
-            this.fancy.CheckedChanged += new System.EventHandler(this.fancy_CheckedChanged);
+            fancy.AutoSize = true;
+            fancy.Location = new System.Drawing.Point(14, 312);
+            fancy.Margin = new System.Windows.Forms.Padding(2);
+            fancy.Name = "fancy";
+            fancy.Size = new System.Drawing.Size(103, 19);
+            fancy.TabIndex = 6;
+            fancy.Text = "Use MattScript";
+            fancy.UseVisualStyleBackColor = true;
+            fancy.CheckedChanged += fancy_CheckedChanged;
             // 
             // fancyLabel
             // 
-            this.fancyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.fancyLabel.Location = new System.Drawing.Point(9, 262);
-            this.fancyLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.fancyLabel.Name = "fancyLabel";
-            this.fancyLabel.Size = new System.Drawing.Size(144, 34);
-            this.fancyLabel.TabIndex = 7;
-            this.fancyLabel.Text = "(Formats scripts to make them easier to understand)";
+            fancyLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            fancyLabel.Location = new System.Drawing.Point(10, 334);
+            fancyLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            fancyLabel.Name = "fancyLabel";
+            fancyLabel.Size = new System.Drawing.Size(168, 39);
+            fancyLabel.TabIndex = 7;
+            fancyLabel.Text = "(Formats scripts to make them easier to understand)";
             // 
             // customBtn
             // 
-            this.customBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.customBtn.Location = new System.Drawing.Point(13, 213);
-            this.customBtn.Margin = new System.Windows.Forms.Padding(2);
-            this.customBtn.Name = "customBtn";
-            this.customBtn.Size = new System.Drawing.Size(141, 26);
-            this.customBtn.TabIndex = 6;
-            this.customBtn.Text = "Custom EMEDF...";
-            this.customBtn.UseVisualStyleBackColor = true;
-            this.customBtn.Click += new System.EventHandler(this.customBtn_Click);
+            customBtn.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            customBtn.Location = new System.Drawing.Point(15, 278);
+            customBtn.Margin = new System.Windows.Forms.Padding(2);
+            customBtn.Name = "customBtn";
+            customBtn.Size = new System.Drawing.Size(164, 30);
+            customBtn.TabIndex = 6;
+            customBtn.Text = "Custom EMEDF...";
+            customBtn.UseVisualStyleBackColor = true;
+            customBtn.Click += customBtn_Click;
+            
             // 
             // eldenBtn
             // 
@@ -160,29 +160,42 @@ namespace DarkScript3
             this.eldenBtn.UseVisualStyleBackColor = true;
             this.eldenBtn.Click += new System.EventHandler(this.eldenBtn_Click);
             // 
+            // ac6Button
+            // 
+            ac6Button.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            ac6Button.Location = new System.Drawing.Point(15, 246);
+            ac6Button.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ac6Button.Name = "ac6Button";
+            ac6Button.Size = new System.Drawing.Size(164, 27);
+            ac6Button.TabIndex = 9;
+            ac6Button.Text = "Armored Core VI";
+            ac6Button.UseVisualStyleBackColor = true;
+            ac6Button.Click += ac6Btn_Click;
+            // 
             // GameChooser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(165, 295);
-            this.Controls.Add(this.eldenBtn);
-            this.Controls.Add(this.fancyLabel);
-            this.Controls.Add(this.fancy);
-            this.Controls.Add(this.customBtn);
-            this.Controls.Add(this.ds2scholarBtn);
-            this.Controls.Add(this.ds2Btn);
-            this.Controls.Add(this.sekiroBtn);
-            this.Controls.Add(this.ds3Btn);
-            this.Controls.Add(this.bbBtn);
-            this.Controls.Add(this.ds1Btn);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.KeyPreview = true;
-            this.Name = "GameChooser";
-            this.Text = "GameChooser";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameChooser_KeyDown);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(192, 386);
+            Controls.Add(ac6Button);
+            Controls.Add(eldenBtn);
+            Controls.Add(fancyLabel);
+            Controls.Add(fancy);
+            Controls.Add(customBtn);
+            Controls.Add(ds2scholarBtn);
+            Controls.Add(ds2Btn);
+            Controls.Add(sekiroBtn);
+            Controls.Add(ds3Btn);
+            Controls.Add(bbBtn);
+            Controls.Add(ds1Btn);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            KeyPreview = true;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "GameChooser";
+            Text = "GameChooser";
+            KeyDown += GameChooser_KeyDown;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -197,5 +210,6 @@ namespace DarkScript3
         private System.Windows.Forms.Label fancyLabel;
         private System.Windows.Forms.Button customBtn;
         private System.Windows.Forms.Button eldenBtn;
+        private System.Windows.Forms.Button ac6Button;
     }
 }
