@@ -46,20 +46,7 @@ namespace DarkScript3.Properties {
                 this["WindowPosition"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DisplayTooltips
-        {
-            get {
-                return ((bool)(this["DisplayTooltips"]));
-            }
-            set {
-                this["DisplayTooltips"] = value;
-            }
-        }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -86,29 +73,16 @@ namespace DarkScript3.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseSoapstoneDSMS {
-            get {
-                return ((bool)(this["UseSoapstoneDSMS"]));
-            }
-            set {
-                this["UseSoapstoneDSMS"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UseSoapstoneSmithbox
-        {
+        public bool UseSoapstone {
             get {
-                return ((bool)(this["UseSoapstoneSmithbox"]));
+                return ((bool)(this["UseSoapstone"]));
             }
             set {
-                this["UseSoapstoneSmithbox"] = value;
+                this["UseSoapstone"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]

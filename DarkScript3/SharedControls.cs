@@ -41,7 +41,7 @@ namespace DarkScript3
             this.docBox = docBox;
             NameMetadata = nameMetadata;
             Metadata = new SoapstoneMetadata(nameMetadata);
-            if (Settings.Default.UseSoapstoneDSMS || Settings.Default.UseSoapstoneSmithbox)
+            if (Settings.Default.UseSoapstone)
             {
                 Metadata.Open(KnownServer.Smithbox);
             }

@@ -460,11 +460,6 @@ namespace DarkScript3
 
         private void Editor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e)
         {
-            if (!Properties.Settings.Default.DisplayTooltips)
-            {
-                return;
-            }
-
             if (PreventHoverMousePosition != null)
             {
                 if (MousePosition.Equals(PreventHoverMousePosition))
@@ -521,14 +516,7 @@ namespace DarkScript3
                             string text = data.Desc;
                             if ((data is SoapstoneMetadata.EntityData ent && ent.Type != "Self") || data is SoapstoneMetadata.EntryData)
                             {
-                                var name = "DSMapStudio";
-
-                                if (DarkScript3.Properties.Settings.Default.UseSoapstoneSmithbox)
-                                {
-                                    name = "Smithbox";
-                                }
-
-                                text += $"\nRight-click tooltip to open in {name}";
+                                text += "\nRight-click tooltip to open in editor";
                             }
                             ShowTip(text, p, data: data);
                         }
