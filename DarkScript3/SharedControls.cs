@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FastColoredTextBoxNS;
 using DarkScript3.Properties;
+using SoapstoneLib;
 
 namespace DarkScript3
 {
@@ -42,7 +43,7 @@ namespace DarkScript3
             Metadata = new SoapstoneMetadata(nameMetadata);
             if (Settings.Default.UseSoapstone)
             {
-                Metadata.Open();
+                Metadata.Open(KnownServer.Smithbox);
             }
             InfoTip = new ToolControl(Metadata);
             BFF = new BetterFindForm(null, InfoTip);

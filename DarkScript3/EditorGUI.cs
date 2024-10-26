@@ -516,7 +516,7 @@ namespace DarkScript3
                             string text = data.Desc;
                             if ((data is SoapstoneMetadata.EntityData ent && ent.Type != "Self") || data is SoapstoneMetadata.EntryData)
                             {
-                                text += "\nRight-click tooltip to open in DSMapStudio";
+                                text += "\nRight-click tooltip to open in editor";
                             }
                             ShowTip(text, p, data: data);
                         }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using DarkScript3.Properties;
 using System.ComponentModel;
 using System.Diagnostics;
+using SoapstoneLib;
 
 namespace DarkScript3
 {
@@ -1139,7 +1140,7 @@ namespace DarkScript3
             Settings.Default.Save();
         }
 
-        private void connectToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        private void connectToolStripMenuItem_DSMS_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Default.UseSoapstone = connectToolStripMenuItem.Checked;
             Settings.Default.Save();
@@ -1148,7 +1149,26 @@ namespace DarkScript3
             {
                 if (Settings.Default.UseSoapstone)
                 {
-                    metadata.Open();
+                    metadata.Open(KnownServer.DSMapStudio);
+                }
+                else
+                {
+                    metadata.Close();
+                }
+            }
+        }
+
+        private void connectToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.UseSoapstone = connectToolStripMenuItem.Checked;
+            Settings.Default.Save();
+            SoapstoneMetadata metadata = SharedControls?.Metadata;
+
+            if (metadata != null && metadata.IsOpenable())
+            {
+                if (Settings.Default.UseSoapstone)
+                {
+                    metadata.Open(KnownServer.Smithbox);
                 }
                 else
                 {
@@ -1162,16 +1182,16 @@ namespace DarkScript3
             StringBuilder sb = new StringBuilder();
             if (Settings.Default.UseSoapstone)
             {
-                sb.AppendLine("DSMapStudio connectivity is enabled.");
+                sb.AppendLine("Editor connectivity is enabled.");
                 sb.AppendLine();
-                sb.AppendLine("When DSMapStudio is open and Settings > Soapstone Server is enabled, "
-                    + "data from DSMapStudio will be used to autocomplete values from params, FMGs, and loaded maps. "
+                sb.AppendLine("When a Soapstone-supported editor is open and Settings > Soapstone Server is enabled, "
+                    + "data from the editor will be used to autocomplete values from params and loaded maps. "
                     + "You can also hover on numbers in DarkScript3 to get tooltip info, "
                     + "and right-click on the tooltip to open it in DSMapStudio.");
             }
             else
             {
-                sb.AppendLine("DSMapStudio connectivity is disabled.");
+                sb.AppendLine("Editor connectivity is disabled.");
                 sb.AppendLine();
                 if (connectToolStripMenuItem.Enabled)
                 {
@@ -1190,7 +1210,7 @@ namespace DarkScript3
             sb.AppendLine($"Client state: {metadata.State}");
             sb.AppendLine();
             sb.AppendLine(metadata.LastLoopResult ?? "No requests sent");
-            ScrollDialog.Show(this, sb.ToString(), "DSMapStudio Soapstone Server Info");
+            ScrollDialog.Show(this, sb.ToString(), "Editor Soapstone Server Info");
         }
 
         private void clearMetadataCacheToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1247,6 +1267,21 @@ namespace DarkScript3
                 Settings.Default.WindowPosition = DesktopBounds;
                 Settings.Default.Save();
             }
+        }
+
+        private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void connectToolStripMenuItem_DSMS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

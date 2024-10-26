@@ -755,7 +755,7 @@ namespace DarkScript3
             var result = new List<object>();
             using (var ms = new MemoryStream(ins.ArgData))
             {
-                var br = new BinaryReaderEx(bigEndian, ms);
+                var br = new BinaryReaderEx(bigEndian, ms.ToArray());
                 foreach (ArgType arg in argStruct)
                 {
                     switch (arg)
@@ -791,9 +791,9 @@ namespace DarkScript3
 
         private static void AssertZeroPad(BinaryReaderEx br, int align)
         {
-            if (br.Stream.Position % align > 0)
+            if (br.Position % align > 0)
             {
-                br.AssertPattern(align - (int)(br.Stream.Position % align), 0);
+                br.AssertPattern(align - (int)(br.Position % align), 0);
             }
         }
 

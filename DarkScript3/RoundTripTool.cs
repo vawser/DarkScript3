@@ -189,7 +189,7 @@ namespace DarkScript3
             {
                 if (args.Contains("undcx"))
                 {
-                    byte[] f = DCX.Decompress(emevdPath);
+                    byte[] f = DCX.Decompress(emevdPath).ToArray();
                     File.WriteAllBytes($@"{inDir}\dcx\{Path.GetFileNameWithoutExtension(emevdPath)}", f);
                 }
                 string name = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(emevdPath));

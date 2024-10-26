@@ -67,7 +67,7 @@ namespace DarkScript3
 
         // This methods should not be used reentrantly, but slap some synchronization on to be extra safe.
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Open()
+        public void Open(KnownServer server)
         {
             if (State == ClientState.Disposed)
             {
@@ -80,7 +80,7 @@ namespace DarkScript3
             }
             if (State == ClientState.Closed)
             {
-                provider.Server = KnownServer.DSMapStudio;
+                provider.Server = server;
                 State = ClientState.Open;
             }
         }
