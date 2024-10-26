@@ -164,6 +164,7 @@ namespace DarkScript3
             ac6Button.Text = "Armored Core VI";
             ac6Button.UseVisualStyleBackColor = true;
             ac6Button.Click += ac6Btn_Click;
+            
             // 
             // GameChooser
             // 

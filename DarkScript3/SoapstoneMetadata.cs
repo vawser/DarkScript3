@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DarkScript3.Properties;
 using SoapstoneLib;
 using SoapstoneLib.Proto;
 using static DarkScript3.DocAutocomplete;

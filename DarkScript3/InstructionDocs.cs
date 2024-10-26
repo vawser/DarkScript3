@@ -754,7 +754,7 @@ namespace DarkScript3
         {
             var result = new List<object>();
             using (var ms = new MemoryStream(ins.ArgData))
-            {
+            
                 var br = new BinaryReaderEx(bigEndian, ms.ToArray());
                 foreach (ArgType arg in argStruct)
                 {
