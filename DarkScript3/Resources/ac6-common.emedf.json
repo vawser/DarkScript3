@@ -10069,7 +10069,7 @@
                     ]
                 },
                 {
-                    "name": "Initialize Event (ESD?)",
+                    "name": "Initialize Local Event",
                     "index": 7,
                     "args": [
                         {
@@ -10118,7 +10118,7 @@
                     ]
                 },
                 {
-                    "name": "End Event (ESD?)",
+                    "name": "Initialize ESD Event",
                     "index": 8,
                     "args": [
                         {
