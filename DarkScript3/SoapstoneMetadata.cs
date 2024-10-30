@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DarkScript3.Properties;
 using SoapstoneLib;
 using SoapstoneLib.Proto;
 using static DarkScript3.DocAutocomplete;
@@ -68,7 +67,7 @@ namespace DarkScript3
 
         // This methods should not be used reentrantly, but slap some synchronization on to be extra safe.
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Open()
+        public void Open(KnownServer server)
         {
             if (State == ClientState.Disposed)
             {
@@ -81,15 +80,7 @@ namespace DarkScript3
             }
             if (State == ClientState.Closed)
             {
-                if (Settings.Default.UseSoapstoneSmithbox)
-                {
-                    provider.Server = KnownServer.Smithbox;
-                }
-                if (Settings.Default.UseSoapstoneDSMS)
-                {
-                    provider.Server = KnownServer.DSMapStudio;
-                }
-
+                provider.Server = server;
                 State = ClientState.Open;
             }
         }

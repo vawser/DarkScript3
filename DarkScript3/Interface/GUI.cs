@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 using DarkScript3.Properties;
 using System.ComponentModel;
 using System.Diagnostics;
+using SoapstoneLib;
 
 namespace DarkScript3
 {
     public partial class GUI : Form
     {
-        public static readonly string NullStringReplaceCharacter = "\u001f";
         private readonly SharedControls SharedControls;
         private readonly ContextMenuStrip FileBrowserContextMenu;
         private readonly Dictionary<string, InstructionDocs> AllDocs = new Dictionary<string, InstructionDocs>();
@@ -79,13 +79,9 @@ namespace DarkScript3
             SharedControls.SetGlobalFont(TextStyles.Font);
             // Ad-hoc way of doing settings, as tool menus (TODO: find something more permanent?)
             // Note this may call CheckChanged, which could have side effects
-            showTooltipsToolStripMenuItem.Checked = Settings.Default.DisplayTooltips;
             showArgumentsInTooltipToolStripMenuItem.Checked = Settings.Default.ArgTooltip;
             showArgumentsInPanelToolStripMenuItem.Checked = Settings.Default.ArgDocbox;
-
-            connectToolStripMenuItem.Checked = Settings.Default.UseSoapstoneDSMS;
-            useSmithboxForMetadataToolStripMenuItem.Checked = Settings.Default.UseSoapstoneSmithbox;
-
+            connectToolStripMenuItem.Checked = Settings.Default.UseSoapstone;
             // Update versions
             string previousVersion = Settings.Default.Version;
             if (!string.IsNullOrEmpty(previousVersion))
@@ -244,7 +240,7 @@ namespace DarkScript3
             FileMetadata metadata,
             EMEVD evd = null,
             string jsText = null,
-            Dictionary<string, string> extraFields = null,
+            HeaderData headerData = null,
             string loadPath = null)
         {
             if (AllEditors.ContainsKey(fileName))
@@ -257,7 +253,7 @@ namespace DarkScript3
             {
                 docs = AllDocs[metadata.GameDocs] = new InstructionDocs(metadata.GameDocs);
             }
-            ScriptSettings settings = new ScriptSettings(docs, extraFields);
+            ScriptSettings settings = new ScriptSettings(docs, headerData?.ExtraSettings);
             EventScripter scripter;
             try
             {
@@ -319,7 +315,7 @@ namespace DarkScript3
             }
             else
             {
-                fileVersion = extraFields != null && extraFields.TryGetValue("version", out string version) ? version : null;
+                fileVersion = headerData?.Version;
             }
             // If properly decompiled, the metadata is reused by the directory sidebar
             string fileDir = Path.GetDirectoryName(fileName);
@@ -350,78 +346,23 @@ namespace DarkScript3
             return true;
         }
 
-        private Dictionary<string, string> GetHeaderValues(string fileText)
-        {
-            Dictionary<string, string> ret = new Dictionary<string, string>();
-            // Some example lines are:
-            // ==EMEVD==
-            // @docs    sekiro-common.emedf.json
-            // @game    Sekiro
-            // ...
-            // ==/EMEVD==
-            Match headerText = Regex.Match(fileText, @"(^|\n)\s*// ==EMEVD==(.|\n)*// ==/EMEVD==");
-            if (headerText.Success)
-            {
-                string[] result = Regex.Split(headerText.Value, @"(\r\n|\r|\n)\s*");
-                foreach (string headerLine in result.ToArray())
-                {
-                    Match lineMatch = Regex.Match(headerLine, @"^//\s+@(\w+)\s+(.*)");
-                    if (lineMatch.Success)
-                    {
-                        ret[lineMatch.Groups[1].Value] = lineMatch.Groups[2].Value.Trim();
-                    }
-                }
-            }
-            return ret;
-        }
-
         // Marked internal for Find in Files functionality. This access can be revoked or modified if necessary.
         internal bool OpenJSFile(string fileName)
         {
             string org = fileName.Substring(0, fileName.Length - 3);
             string text = File.ReadAllText(fileName);
-            Dictionary<string, string> headers = GetHeaderValues(text);
-            List<string> emevdFileHeaders = new List<string> { "docs", "compress", "game", "string", "linked" };
 
             EMEVD evd;
             FileMetadata metadata;
-            if (emevdFileHeaders.All(name => headers.ContainsKey(name)))
+            if (HeaderData.Read(text, out HeaderData headerData))
             {
-                metadata = new FileMetadata { GameDocs = headers["docs"] };
-                string dcx = headers["compress"];
-                if (!Enum.TryParse(dcx, out DCX.Type compression))
-                {
-                    // We also have to account for historical DCX.Type names, which mostly correspond
-                    // to DCX.DefaultType.
-                    if (Enum.TryParse(dcx, out DCX.DefaultType defaultComp))
-                    {
-                        compression = (DCX.Type)defaultComp;
-                    }
-                    else if (dcx == "SekiroKRAK" || dcx == "SekiroDFLT")
-                    {
-                        // This is turned into SekiroDFLT when it's actually written out. Store it as KRAK in the header
-                        // just in case it's supported one day.
-                        compression = (DCX.Type)DCX.DefaultType.Sekiro;
-                    }
-                    else
-                    {
-                        throw new Exception($"Unknown compression type in file header {headers["compress"]}");
-                    }
-                }
-                if (!Enum.TryParse(headers["game"], out EMEVD.Game game))
-                {
-                    throw new Exception($"Unknown game type in file header {headers["game"]}");
-                }
-                string linked = headers["linked"].TrimStart('[').TrimEnd(']');
+                metadata = new FileMetadata { GameDocs = headerData.GameDocs };
                 evd = new EMEVD()
                 {
-                    Compression = compression,
-                    Format = game,
-                    StringData = Encoding.Unicode.GetBytes(headers["string"].Replace(GUI.NullStringReplaceCharacter, "\0")),
-                    LinkedFileOffsets = Regex.Split(linked, @"\s*,\s*")
-                        .Where(o => !string.IsNullOrWhiteSpace(o))
-                        .Select(o => long.Parse(o))
-                        .ToList()
+                    Compression = headerData.Compression,
+                    Format = headerData.Game,
+                    StringData = headerData.StringData,
+                    LinkedFileOffsets = headerData.LinkedFileOffsets,
                 };
             }
             else if (!File.Exists(org))
@@ -439,8 +380,8 @@ namespace DarkScript3
                 }
             }
 
-            text = Regex.Replace(text, @"(^|\n)\s*// ==EMEVD==(.|\n)*// ==/EMEVD==", "");
-            return OpenEMEVDFile(org, metadata, evd: evd, jsText: text.Trim(), extraFields: headers);
+            text = HeaderData.Trim(text);
+            return OpenEMEVDFile(org, metadata, evd: evd, jsText: text.Trim(), headerData: headerData);
         }
 
         private void OpenXMLFile(string fileName)
@@ -783,8 +724,11 @@ namespace DarkScript3
 
         private class FileBrowserTag
         {
+            // map.emevd.dcx
             public string BaseName { get; set; }
+            // currentdir/map.emevd.dcx
             public string LocalPath { get; set; }
+            // gamedir/map.emevd.dcx
             public string GamePath { get; set; }
         }
 
@@ -837,7 +781,12 @@ namespace DarkScript3
                 return;
             }
             DirectoryMetadata.TryGetValue(CurrentDirectory, out FileMetadata metadata);
-            if (File.Exists(tag.LocalPath))
+            string jsPath = $"{tag.LocalPath}.js";
+            if (File.Exists(jsPath))
+            {
+                OpenFile(jsPath, metadata);
+            }
+            else if (File.Exists(tag.LocalPath))
             {
                 OpenFile(tag.LocalPath, metadata);
             }
@@ -913,15 +862,7 @@ namespace DarkScript3
                 if (gameStr != null)
                 {
                     string mapName = tag.BaseName.Split('.')[0];
-
-                    var name = "DSMapStudio";
-
-                    if (DarkScript3.Properties.Settings.Default.UseSoapstoneSmithbox)
-                    {
-                        name = "Smithbox";
-                    }
-
-                    ToolStripMenuItem mapItem = new ToolStripMenuItem($"Load {mapName} in {name}");
+                    ToolStripMenuItem mapItem = new ToolStripMenuItem($"Load {mapName} in DSMapStudio");
                     mapItem.Click += async (sender, e) => await OpenFileBrowserMap(gameStr, mapName);
                     FileBrowserContextMenu.Items.Add(mapItem);
                 }
@@ -1186,11 +1127,6 @@ namespace DarkScript3
         {
             OpenURL("https://github.com/AinTunez/DarkScript3/releases");
         }
-        private void showTooltipsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Default.DisplayTooltips = showTooltipsToolStripMenuItem.Checked;
-            Settings.Default.Save();
-        }
 
         private void showArgumentTooltipsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
@@ -1204,29 +1140,16 @@ namespace DarkScript3
             Settings.Default.Save();
         }
 
-        // DSMapStudio
-        private void connectToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        private void connectToolStripMenuItem_DSMS_CheckedChanged(object sender, EventArgs e)
         {
-            if(connectToolStripMenuItem.Checked)
-            {
-                useSmithboxForMetadataToolStripMenuItem.Checked = false;
-                Settings.Default.UseSoapstoneDSMS = true;
-                Settings.Default.UseSoapstoneSmithbox = false;
-            }
-            else
-            {
-                useSmithboxForMetadataToolStripMenuItem.Checked = true;
-                Settings.Default.UseSoapstoneDSMS = false;
-                Settings.Default.UseSoapstoneSmithbox = true;
-            }
-
+            Settings.Default.UseSoapstone = connectToolStripMenuItem.Checked;
             Settings.Default.Save();
             SoapstoneMetadata metadata = SharedControls?.Metadata;
             if (metadata != null && metadata.IsOpenable())
             {
-                if (Settings.Default.UseSoapstoneDSMS)
+                if (Settings.Default.UseSoapstone)
                 {
-                    metadata.Open();
+                    metadata.Open(KnownServer.DSMapStudio);
                 }
                 else
                 {
@@ -1235,29 +1158,17 @@ namespace DarkScript3
             }
         }
 
-        // Smithbox
-        private void useSmithboxForMetadataToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        private void connectToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            if (useSmithboxForMetadataToolStripMenuItem.Checked)
-            {
-                connectToolStripMenuItem.Checked = false;
-                Settings.Default.UseSoapstoneDSMS = false;
-                Settings.Default.UseSoapstoneSmithbox = true;
-            }
-            else
-            {
-                connectToolStripMenuItem.Checked = true;
-                Settings.Default.UseSoapstoneDSMS = true;
-                Settings.Default.UseSoapstoneSmithbox = false;
-            }
-
+            Settings.Default.UseSoapstone = connectToolStripMenuItem.Checked;
             Settings.Default.Save();
             SoapstoneMetadata metadata = SharedControls?.Metadata;
+
             if (metadata != null && metadata.IsOpenable())
             {
-                if (Settings.Default.UseSoapstoneSmithbox)
+                if (Settings.Default.UseSoapstone)
                 {
-                    metadata.Open();
+                    metadata.Open(KnownServer.Smithbox);
                 }
                 else
                 {
@@ -1269,25 +1180,18 @@ namespace DarkScript3
         private void showConnectionInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-
-            var name = "DSMapStudio";
-            if (Settings.Default.UseSoapstoneSmithbox)
+            if (Settings.Default.UseSoapstone)
             {
-                name = "Smithbox";
-            }
-
-            if (Settings.Default.UseSoapstoneDSMS || Settings.Default.UseSoapstoneSmithbox)
-            {
-                sb.AppendLine($"{name} connectivity is enabled.");
+                sb.AppendLine("Editor connectivity is enabled.");
                 sb.AppendLine();
-                sb.AppendLine($"When {name} is open and Settings > Soapstone Server is enabled, "
-                    + $"data from {name} will be used to autocomplete values from params, FMGs, and loaded maps. "
+                sb.AppendLine("When a Soapstone-supported editor is open and Settings > Soapstone Server is enabled, "
+                    + "data from the editor will be used to autocomplete values from params and loaded maps. "
                     + "You can also hover on numbers in DarkScript3 to get tooltip info, "
-                    + $"and right-click on the tooltip to open it in {name}.");
+                    + "and right-click on the tooltip to open it in DSMapStudio.");
             }
             else
             {
-                sb.AppendLine("Cross-reference connectivity is disabled.");
+                sb.AppendLine("Editor connectivity is disabled.");
                 sb.AppendLine();
                 if (connectToolStripMenuItem.Enabled)
                 {
@@ -1298,7 +1202,6 @@ namespace DarkScript3
                     sb.AppendLine($"Restart DarkScript3 and select \"{connectToolStripMenuItem.Text}\" to enable it.");
                 }
             }
-
             sb.AppendLine();
             SoapstoneMetadata metadata = SharedControls.Metadata;
             string portStr = metadata.LastPort is int port ? $"{port}" : "None";
@@ -1307,21 +1210,14 @@ namespace DarkScript3
             sb.AppendLine($"Client state: {metadata.State}");
             sb.AppendLine();
             sb.AppendLine(metadata.LastLoopResult ?? "No requests sent");
-            ScrollDialog.Show(this, sb.ToString(), "Soapstone Server Info");
+            ScrollDialog.Show(this, sb.ToString(), "Editor Soapstone Server Info");
         }
 
         private void clearMetadataCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SharedControls.Metadata.ResetData();
-
-            var name = "DSMapStudio";
-            if (Settings.Default.UseSoapstoneSmithbox)
-            {
-                name = "Smithbox";
-            }
-
             ScrollDialog.Show(this,
-                $"Metadata cache cleared. Names and autocomplete items will be refetched from {name} when connected."
+                "Metadata cache cleared. Names and autocomplete items will be refetched from DSMapStudio when connected."
                     + "\n\n(This may be supported automatically in the future, if that would be helpful.)",
                 "Cleared cached metadata");
         }
@@ -1371,6 +1267,21 @@ namespace DarkScript3
                 Settings.Default.WindowPosition = DesktopBounds;
                 Settings.Default.Save();
             }
+        }
+
+        private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void connectToolStripMenuItem_DSMS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

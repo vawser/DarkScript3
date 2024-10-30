@@ -1,3 +1,5 @@
+using System;
+
 namespace DarkScript3
 {
     partial class GUI
@@ -68,8 +70,6 @@ namespace DarkScript3
             emevdDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             previewCompilationOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            showTooltipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             showArgumentsInTooltipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             showArgumentsInPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,8 +77,8 @@ namespace DarkScript3
             showConnectionInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             clearMetadataCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            connectToolStripMenuItem_DSMS = new System.Windows.Forms.ToolStripMenuItem();
             connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            useSmithboxForMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewEMEDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             viewEMEVDTutorialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +115,7 @@ namespace DarkScript3
             menuStrip.Size = new System.Drawing.Size(905, 24);
             menuStrip.TabIndex = 1;
             menuStrip.Text = "menuStrip1";
+            menuStrip.ItemClicked += menuStrip_ItemClicked;
             // 
             // fileToolStripMenuItem
             // 
@@ -352,7 +353,7 @@ namespace DarkScript3
             // 
             // viewToolStripMenuItem
             // 
-            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { emevdDataToolStripMenuItem, previewCompilationOutputToolStripMenuItem, documentationToolStripMenuItem, toolStripSeparator7, showTooltipsToolStripMenuItem, toolStripSeparator5, showArgumentsInTooltipToolStripMenuItem, showArgumentsInPanelToolStripMenuItem });
+            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { emevdDataToolStripMenuItem, previewCompilationOutputToolStripMenuItem, documentationToolStripMenuItem, toolStripSeparator5, showArgumentsInTooltipToolStripMenuItem, showArgumentsInPanelToolStripMenuItem });
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             viewToolStripMenuItem.Text = "View";
@@ -379,19 +380,6 @@ namespace DarkScript3
             documentationToolStripMenuItem.Text = "Toggle Panel";
             documentationToolStripMenuItem.Click += DocumentationToolStripMenuItem_Click;
             // 
-            // toolStripSeparator7
-            // 
-            toolStripSeparator7.Name = "toolStripSeparator7";
-            toolStripSeparator7.Size = new System.Drawing.Size(231, 6);
-            // 
-            // showTooltipsToolStripMenuItem
-            // 
-            showTooltipsToolStripMenuItem.CheckOnClick = true;
-            showTooltipsToolStripMenuItem.Name = "showTooltipsToolStripMenuItem";
-            showTooltipsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            showTooltipsToolStripMenuItem.Text = "Display Tooltips";
-            showTooltipsToolStripMenuItem.CheckedChanged += showTooltipsToolStripMenuItem_CheckedChanged;
-            // 
             // toolStripSeparator5
             // 
             toolStripSeparator5.Name = "toolStripSeparator5";
@@ -415,7 +403,7 @@ namespace DarkScript3
             // 
             // metadataToolStripMenuItem
             // 
-            metadataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { showConnectionInfoToolStripMenuItem, clearMetadataCacheToolStripMenuItem, toolStripSeparator6, connectToolStripMenuItem, useSmithboxForMetadataToolStripMenuItem });
+            metadataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { showConnectionInfoToolStripMenuItem, clearMetadataCacheToolStripMenuItem, toolStripSeparator6, connectToolStripMenuItem_DSMS, connectToolStripMenuItem });
             metadataToolStripMenuItem.Name = "metadataToolStripMenuItem";
             metadataToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
             metadataToolStripMenuItem.Text = "Metadata";
@@ -423,37 +411,38 @@ namespace DarkScript3
             // showConnectionInfoToolStripMenuItem
             // 
             showConnectionInfoToolStripMenuItem.Name = "showConnectionInfoToolStripMenuItem";
-            showConnectionInfoToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            showConnectionInfoToolStripMenuItem.Text = "Show Connection Info...";
+            showConnectionInfoToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            showConnectionInfoToolStripMenuItem.Text = "Show Editor Connection Info...";
             showConnectionInfoToolStripMenuItem.Click += showConnectionInfoToolStripMenuItem_Click;
             // 
             // clearMetadataCacheToolStripMenuItem
             // 
             clearMetadataCacheToolStripMenuItem.Name = "clearMetadataCacheToolStripMenuItem";
-            clearMetadataCacheToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            clearMetadataCacheToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             clearMetadataCacheToolStripMenuItem.Text = "Clear Metadata Cache";
             clearMetadataCacheToolStripMenuItem.Click += clearMetadataCacheToolStripMenuItem_Click;
             // 
             // toolStripSeparator6
             // 
             toolStripSeparator6.Name = "toolStripSeparator6";
-            toolStripSeparator6.Size = new System.Drawing.Size(236, 6);
+            toolStripSeparator6.Size = new System.Drawing.Size(232, 6);
+            // 
+            // connectToolStripMenuItem_DSMS
+            // 
+            connectToolStripMenuItem_DSMS.CheckOnClick = true;
+            connectToolStripMenuItem_DSMS.Name = "connectToolStripMenuItem_DSMS";
+            connectToolStripMenuItem_DSMS.Size = new System.Drawing.Size(235, 22);
+            connectToolStripMenuItem_DSMS.Text = "Use Meta from DSMS";
+            connectToolStripMenuItem_DSMS.Click += connectToolStripMenuItem_DSMS_Click;
             // 
             // connectToolStripMenuItem
             // 
             connectToolStripMenuItem.CheckOnClick = true;
             connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            connectToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            connectToolStripMenuItem.Text = "Use DSMapStudio for Metadata";
-            connectToolStripMenuItem.CheckedChanged += connectToolStripMenuItem_CheckedChanged;
-            // 
-            // useSmithboxForMetadataToolStripMenuItem
-            // 
-            useSmithboxForMetadataToolStripMenuItem.CheckOnClick = true;
-            useSmithboxForMetadataToolStripMenuItem.Name = "useSmithboxForMetadataToolStripMenuItem";
-            useSmithboxForMetadataToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            useSmithboxForMetadataToolStripMenuItem.Text = "Use Smithbox for Metadata";
-            useSmithboxForMetadataToolStripMenuItem.CheckedChanged += useSmithboxForMetadataToolStripMenuItem_CheckedChanged;
+            connectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            connectToolStripMenuItem.Text = "Use Metadata from Smithbox";
+            connectToolStripMenuItem.CheckedChanged += connectToolStripMenuItem_DSMS_CheckedChanged;
+            connectToolStripMenuItem.Click += connectToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -507,7 +496,7 @@ namespace DarkScript3
             checkForDarkScript3UpdatesToolStripMenuItem.Name = "checkForDarkScript3UpdatesToolStripMenuItem";
             checkForDarkScript3UpdatesToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             checkForDarkScript3UpdatesToolStripMenuItem.Text = "Check for DarkScript3 Updates";
-            checkForDarkScript3UpdatesToolStripMenuItem.Click += checkForDarkScript3UpdatesToolStripMenuItem_Click;
+            checkForDarkScript3UpdatesToolStripMenuItem.Click += soapstoneUseDsms_Click;
             // 
             // statusLabel
             // 
@@ -676,6 +665,11 @@ namespace DarkScript3
             PerformLayout();
         }
 
+        private void soapstoneUseDsms_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -738,9 +732,7 @@ namespace DarkScript3
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem showTooltipsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem useSmithboxForMetadataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem_DSMS;
     }
 }
 

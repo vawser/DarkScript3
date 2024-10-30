@@ -49,7 +49,7 @@ namespace DarkScript3
                             string[] parts = line.Split(new[] { ' ' }, 2);
                             if (parts.Length == 2)
                             {
-                                names[parts[0]] = parts[1];
+                                names[parts[0]] = parts[1].Trim();
                             }
                         }
                     }
