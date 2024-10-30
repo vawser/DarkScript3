@@ -10069,7 +10069,7 @@
                     ]
                 },
                 {
-                    "name": "Initialize Local Event",
+                    "name": "Esd Triggered Event",
                     "index": 7,
                     "args": [
                         {
@@ -10118,7 +10118,7 @@
                     ]
                 },
                 {
-                    "name": "Initialize ESD Event",
+                    "name": "Esd Triggered Common Event",
                     "index": 8,
                     "args": [
                         {
